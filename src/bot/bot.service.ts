@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BotMessages } from 'constants/telegram/enums/bot-messages.enum';
 import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
+import { MindeeService } from 'src/mindee/mindee.service';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { Context } from 'telegraf';
 
@@ -8,7 +9,10 @@ import { Context } from 'telegraf';
 export class BotService {
   private state = new Map<string, string>();
 
-  constructor(private readonly telegram: TelegramService) {}
+  constructor(
+    private readonly telegram: TelegramService,
+    private readonly mindee: MindeeService,
+  ) {}
 
   async start(ctx: Context) {
     const userId = this.getUserId(ctx);
@@ -35,6 +39,12 @@ export class BotService {
     }
 
     return ctx.reply(BotMessages.ERROR_WITH_HANDLE_PHOTO);
+  }
+
+  async uploadPhoto(ctx: Context) {
+    const buffer = (await this.handlePhoto(ctx)) as ArrayBuffer;
+    const result = await this.mindee.getPassportInfo(buffer);
+    return ctx.reply(result);
   }
 
   private getUserId(ctx: Context) {

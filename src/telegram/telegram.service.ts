@@ -12,8 +12,8 @@ export class TelegramService {
     private readonly config: ConfigService,
     private readonly fetch: FetchService,
   ) {
-    this.tgUrl = this.config.get<string>('TELEGRAM_URL') ?? '';
-    this.botToken = this.config.get<string>('TELEGRAM_BOT_TOKEN') ?? '';
+    this.tgUrl = this.config.get<string>('TELEGRAM_URL') as string;
+    this.botToken = this.config.get<string>('TELEGRAM_BOT_TOKEN') as string;
   }
 
   private buildGetFileUrl(fileId: string): string {

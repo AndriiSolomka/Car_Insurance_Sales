@@ -13,6 +13,6 @@ export class BotUpdate {
 
   @On('photo')
   async onPhoto(@Ctx() ctx: Context) {
-    await this.botService.handlePhoto(ctx);
+    await this.botService.uploadPhoto(ctx);
   }
 }
