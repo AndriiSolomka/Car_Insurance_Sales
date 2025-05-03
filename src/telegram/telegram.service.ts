@@ -1,32 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { BotMessages } from 'constants/telegram/bot-messages.enum';
-import { StateStatuses } from 'constants/telegram/state-status.enum';
-import { Context } from 'telegraf';
+import { ConfigService } from '@nestjs/config';
+import { TelegramGetFileResponse } from 'constants/telegram/types/types';
+import { FetchService } from 'src/fetch/fetch.service';
 
 @Injectable()
 export class TelegramService {
-  private state = new Map<string, string>();
+  private readonly tgUrl: string;
+  private readonly botToken: string;
 
-  async start(ctx: Context) {
-    const userId = this.getUserId(ctx);
-    this.state.set(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
-    return ctx.reply(BotMessages.WELCOME);
+  constructor(
+    private readonly config: ConfigService,
+    private readonly fetch: FetchService,
+  ) {
+    this.tgUrl = this.config.get<string>('TELEGRAM_URL') ?? '';
+    this.botToken = this.config.get<string>('TELEGRAM_BOT_TOKEN') ?? '';
   }
 
-  async handlePhoto(ctx: Context) {
-    const userId = this.getUserId(ctx);
-    const currentState = this.state.get(userId);
-
-    if (currentState !== StateStatuses.WAITING_FOR_DOCUMENTS) {
-      return ctx.reply(BotMessages.INVALID_STATE_FOR_PHOTO);
-    }
-
-    this.state.set(userId, StateStatuses.DOCUMENTS_RECEIVED);
-
-    return ctx.reply(BotMessages.PHOTO_RECEIVED);
+  private buildGetFileUrl(fileId: string): string {
+    return `${this.tgUrl}/bot${this.botToken}/getFile?file_id=${fileId}`;
   }
 
-  private getUserId(ctx: Context) {
-    return ctx.chat?.id?.toString() ?? 'unknown_user';
+  private buildDownloadUrl(filePath: string): string {
+    return `${this.tgUrl}/file/bot${this.botToken}/${filePath}`;
+  }
+
+  async getFilePath(fileId: string): Promise<string> {
+    const url = this.buildGetFileUrl(fileId);
+    const response = await this.fetch.get<TelegramGetFileResponse>(url);
+    const filePath = response.result.file_path;
+    return filePath;
+  }
+
+  async downloadFile(fileId: string) {
+    const filePath = await this.getFilePath(fileId);
+    const downloadUrl = this.buildDownloadUrl(filePath);
+    const buffer = await this.fetch.get(downloadUrl);
+    return buffer;
   }
 }
