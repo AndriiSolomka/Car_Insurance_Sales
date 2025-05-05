@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TelegramGetFileResponse } from 'constants/telegram/types/types';
+import { TelegramGetFileResponse } from 'constants/telegram/types/telegramGetFileResponse';
 import { FetchService } from 'src/fetch/fetch.service';
 
 @Injectable()
@@ -31,10 +31,10 @@ export class TelegramService {
     return filePath;
   }
 
-  async downloadFile(fileId: string) {
+  async downloadFile(fileId: string): Promise<Buffer> {
     const filePath = await this.getFilePath(fileId);
     const downloadUrl = this.buildDownloadUrl(filePath);
-    const buffer = await this.fetch.get(downloadUrl);
+    const buffer = await this.fetch.get<Buffer>(downloadUrl);
     return buffer;
   }
 }
