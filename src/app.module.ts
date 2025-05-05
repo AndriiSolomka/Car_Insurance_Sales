@@ -5,6 +5,9 @@ import { FetchModule } from './fetch/fetch.module';
 import { MindeeModule } from './mindee/mindee.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { BotModule } from './bot/bot.module';
+import { UsersModule } from './users/users.module';
+import { PhotoModule } from './photo/photo.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { BotModule } from './bot/bot.module';
     FetchModule,
     MindeeModule,
     BotModule,
+    UsersModule,
+    PhotoModule,
+    DocumentsModule,
   ],
   controllers: [],
   providers: [],
