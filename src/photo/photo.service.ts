@@ -48,7 +48,7 @@ export class PhotoService {
     const userPhotos = this.userService.getPhotos(userId);
     const isCorrectPhotoCount = userPhotos.length === this.REQUIRED_PHOTO_COUNT;
 
-    if (isCorrectPhotoCount)
+    if (!isCorrectPhotoCount)
       return ctx.reply(
         `${photoProgressMessage(userPhotos.length, this.REQUIRED_PHOTO_COUNT)}`,
       );
