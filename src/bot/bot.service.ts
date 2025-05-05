@@ -1,53 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { BotMessages } from 'constants/telegram/enums/bot-messages.enum';
 import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
-import { MindeeService } from 'src/mindee/mindee.service';
-import { TelegramService } from 'src/telegram/telegram.service';
+import { PhotoService } from 'src/photo/photo.service';
+import { UsersService } from 'src/users/users.service';
+import { isPositiveAnswer } from 'src/utils/filter/filterAnswers';
 import { Context } from 'telegraf';
 
 @Injectable()
 export class BotService {
-  private state = new Map<string, string>();
-
   constructor(
-    private readonly telegram: TelegramService,
-    private readonly mindee: MindeeService,
+    private readonly userService: UsersService,
+    private readonly photoUploadHandler: PhotoService,
   ) {}
 
   async start(ctx: Context) {
     const userId = this.getUserId(ctx);
-    this.state.set(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
+    this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
     return ctx.reply(BotMessages.WELCOME);
   }
 
-  async handlePhoto(ctx: Context) {
-    const userId = this.getUserId(ctx);
-    const currentState = this.state.get(userId);
-
-    if (currentState !== StateStatuses.WAITING_FOR_DOCUMENTS) {
-      return ctx.reply(BotMessages.INVALID_STATE_FOR_PHOTO);
-    }
-
-    this.state.set(userId, StateStatuses.DOCUMENTS_RECEIVED);
-
-    if (ctx.message && 'photo' in ctx.message) {
-      const photoSizes = ctx.message.photo;
-      const largestPhoto = photoSizes[photoSizes.length - 1];
-      const fileId = largestPhoto.file_id;
-      const buffer = await this.telegram.downloadFile(fileId);
-      return buffer;
-    }
-
-    return ctx.reply(BotMessages.ERROR_WITH_HANDLE_PHOTO);
-  }
-
   async uploadPhoto(ctx: Context) {
-    const buffer = (await this.handlePhoto(ctx)) as ArrayBuffer;
-    const result = await this.mindee.getPassportInfo(buffer);
-    return ctx.reply(result);
+    return this.photoUploadHandler.handle(ctx);
   }
 
-  private getUserId(ctx: Context) {
+  async confirmPrice(ctx: Context) {
+    const userId = this.getUserId(ctx);
+    if (isPositiveAnswer(ctx)) {
+      this.userService.setState(userId, StateStatuses.COMPLETED);
+      return ctx.reply(BotMessages.CONFIRMED);
+    }
+    return ctx.reply(BotMessages.ONLY_ONE_PRICE);
+  }
+
+  private getUserId(ctx: Context): string {
     return ctx.chat?.id?.toString() ?? 'unknown_user';
   }
 }

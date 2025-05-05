@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MindeeModule } from 'src/mindee/mindee.module';
 import { BotService } from './bot.service';
 import { BotUpdate } from './bot.update';
-import { TelegramModule } from 'src/telegram/telegram.module';
+import { UsersModule } from 'src/users/users.module';
+import { PhotoModule } from 'src/photo/photo.module';
 
 @Module({
   imports: [
@@ -15,8 +15,8 @@ import { TelegramModule } from 'src/telegram/telegram.module';
       }),
       inject: [ConfigService],
     }),
-    MindeeModule,
-    TelegramModule,
+    UsersModule,
+    PhotoModule,
   ],
 
   providers: [BotService, BotUpdate],
