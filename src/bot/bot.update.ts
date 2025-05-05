@@ -15,4 +15,9 @@ export class BotUpdate {
   async onPhoto(@Ctx() ctx: Context) {
     await this.botService.uploadPhoto(ctx);
   }
+
+  @On('text')
+  async onText(@Ctx() ctx: Context) {
+    await this.botService.confirmPrice(ctx);
+  }
 }

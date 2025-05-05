@@ -23,4 +23,16 @@ export class MindeeService {
 
     return response.document.toString();
   }
+
+  async getDriverLicenseInfo(buffer: ArrayBuffer): Promise<string> {
+    const stream = Readable.from(Buffer.from(buffer));
+    const inputSource = this.client.docFromStream(stream, 'driver_license.jpg');
+
+    const response = await this.client.parse(
+      mindee.product.DriverLicenseV1,
+      inputSource,
+    );
+
+    return response.document.toString();
+  }
 }
