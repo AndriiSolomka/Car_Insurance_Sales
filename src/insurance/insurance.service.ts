@@ -1,0 +1,21 @@
+// services/insurance.service.ts
+import { Injectable } from '@nestjs/common';
+import { OpenAiService } from 'src/openai/openai.service';
+import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
+import { generatePolicyPrompt } from 'src/utils/promt/insurance';
+
+@Injectable()
+export class InsuranceService {
+  constructor(private readonly openAiService: OpenAiService) {}
+
+  // async generatePolicy(passportData: IPassportData): Promise<string> {
+  //   const prompt = generatePolicyPrompt(passportData);
+  //   return await this.openAiService.ask(prompt);
+  // }
+
+  generatePolicy(passportData: IPassportData): string {
+    console.log('Generating policy with data:', passportData);
+
+    return 'OK';
+  }
+}

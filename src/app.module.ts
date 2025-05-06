@@ -8,6 +8,8 @@ import { BotModule } from './bot/bot.module';
 import { UsersModule } from './users/users.module';
 import { PhotoModule } from './photo/photo.module';
 import { DocumentsModule } from './documents/documents.module';
+import { OpenAiModule } from './openai/openai.module';
+import { InsuranceModule } from './insurance/insurance.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { DocumentsModule } from './documents/documents.module';
     UsersModule,
     PhotoModule,
     DocumentsModule,
+    OpenAiModule,
+    InsuranceModule,
   ],
   controllers: [],
   providers: [],

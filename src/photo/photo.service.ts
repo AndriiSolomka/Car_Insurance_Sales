@@ -5,7 +5,10 @@ import {
 } from 'constants/telegram/enums/bot-messages.enum';
 import { REQUIRED_PHOTO_COUNT } from 'constants/telegram/enums/photo';
 import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
+import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
 import { DocumentValidatorService } from 'src/documents/validator.service';
+import { InsuranceService } from 'src/insurance/insurance.service';
+import { OpenAiService } from 'src/openai/openai.service';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { UsersService } from 'src/users/users.service';
 import { getLargestPhotoFileId } from 'src/utils/filter/filterPhotos';
@@ -17,6 +20,8 @@ export class PhotoService {
     private readonly telegram: TelegramService,
     private readonly userService: UsersService,
     private readonly documentValidator: DocumentValidatorService,
+    private readonly openAiService: OpenAiService,
+    private readonly insuranceService: InsuranceService,
   ) {}
 
   async extractPhotos(ctx: Context): Promise<Buffer[]> {
@@ -62,20 +67,28 @@ export class PhotoService {
   ) {
     const validation = await this.documentValidator.validate(photos);
 
-    if (!validation) {
+    if (!validation || !validation.passportData) {
       this.userService.clearPhotos(userId);
-      return ctx.reply(BotMessages.INVALID_PASSPORT_DATA);
+      return ctx.reply('Неверные паспортные данные.');
     }
+
     this.userService.setState(userId, StateStatuses.DOCUMENTS_RECEIVED);
 
     await ctx.reply(
-      `${BotMessages.DOCUMENTS_RECEIVED}\n
-      ${JSON.stringify(validation.passportData, null, 2)}`,
+      `Документы получены\n${JSON.stringify(validation.passportData, null, 2)}`,
     );
 
-    return ctx.reply(BotMessages.PRICE_OFFER);
-  }
+    // const policyText = await this.insuranceService.generatePolicy(
+    //   validation.passportData,
+    // );
 
+    const policyText = this.insuranceService.generatePolicy(
+      validation.passportData,
+    );
+
+    await ctx.reply('✅ Ваш страховой полис:');
+    await ctx.reply(policyText);
+  }
   private getUserId(ctx: Context): string {
     return ctx.chat?.id?.toString() ?? 'unknown_user';
   }
