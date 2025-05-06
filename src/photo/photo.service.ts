@@ -3,6 +3,7 @@ import {
   BotMessages,
   photoProgressMessage,
 } from 'constants/telegram/enums/bot-messages.enum';
+import { REQUIRED_PHOTO_COUNT } from 'constants/telegram/enums/photo';
 import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
 import { DocumentValidatorService } from 'src/documents/validator.service';
 import { TelegramService } from 'src/telegram/telegram.service';
@@ -12,8 +13,6 @@ import { Context } from 'telegraf';
 
 @Injectable()
 export class PhotoService {
-  private readonly REQUIRED_PHOTO_COUNT = 2;
-
   constructor(
     private readonly telegram: TelegramService,
     private readonly userService: UsersService,
@@ -39,18 +38,18 @@ export class PhotoService {
     return await this.telegram.downloadFile(largestId);
   }
 
-  async handle(ctx: Context) {
+  async processPhotoUpload(ctx: Context) {
     const userId = this.getUserId(ctx);
 
     const photoBuffers = await this.extractPhotos(ctx);
     this.userService.addPhotos(userId, photoBuffers);
 
     const userPhotos = this.userService.getPhotos(userId);
-    const isCorrectPhotoCount = userPhotos.length === this.REQUIRED_PHOTO_COUNT;
+    const isPhotoCountSufficient = this.checkPhotoCount(userPhotos);
 
-    if (!isCorrectPhotoCount)
+    if (!isPhotoCountSufficient)
       return ctx.reply(
-        `${photoProgressMessage(userPhotos.length, this.REQUIRED_PHOTO_COUNT)}`,
+        `${photoProgressMessage(userPhotos.length, REQUIRED_PHOTO_COUNT.COUNT)}\n`,
       );
 
     return this.validateAndRespond(ctx, userId, userPhotos);
@@ -67,7 +66,6 @@ export class PhotoService {
       this.userService.clearPhotos(userId);
       return ctx.reply(BotMessages.INVALID_PASSPORT_DATA);
     }
-
     this.userService.setState(userId, StateStatuses.DOCUMENTS_RECEIVED);
 
     await ctx.reply(
@@ -80,5 +78,9 @@ export class PhotoService {
 
   private getUserId(ctx: Context): string {
     return ctx.chat?.id?.toString() ?? 'unknown_user';
+  }
+
+  private checkPhotoCount(userPhotos: Buffer[]): boolean {
+    return userPhotos.length === Number(REQUIRED_PHOTO_COUNT.COUNT);
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PassportData } from 'constants/telegram/types/filterDocument';
+import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
 import { MindeeService } from 'src/mindee/mindee.service';
 import {
   checkPassportData,
@@ -12,7 +12,7 @@ export class DriverLicenseService {
 
   async validateDriverLicense(
     buffer: ArrayBuffer,
-  ): Promise<{ valid: boolean; data: PassportData }> {
+  ): Promise<{ valid: boolean; data: IPassportData }> {
     const response = await this.mindee.getDriverLicenseInfo(buffer);
     const filtered = filterPassportData(response);
     return { valid: checkPassportData(filtered), data: filtered };

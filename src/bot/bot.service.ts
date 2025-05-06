@@ -20,7 +20,7 @@ export class BotService {
   }
 
   async uploadPhoto(ctx: Context) {
-    return this.photoUploadHandler.handle(ctx);
+    return this.photoUploadHandler.processPhotoUpload(ctx);
   }
 
   async confirmPrice(ctx: Context) {

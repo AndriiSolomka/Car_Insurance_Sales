@@ -1,6 +1,6 @@
-import { PassportData } from 'constants/telegram/types/filterDocument';
+import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
 
-export const filterPassportData = (rawData: string): PassportData => {
+export const filterPassportData = (rawData: string): IPassportData => {
   const extract = (label: string): string => {
     const regex = new RegExp(`:${label}: (.+)`);
     const match = rawData.match(regex);
@@ -20,7 +20,7 @@ export const filterPassportData = (rawData: string): PassportData => {
   };
 };
 
-export const checkPassportData = (data: PassportData): boolean => {
+export const checkPassportData = (data: IPassportData): boolean => {
   for (const item in data) {
     if (data[item] === 'N/A') return false;
   }

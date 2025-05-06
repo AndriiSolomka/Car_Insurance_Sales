@@ -1,4 +1,4 @@
-export interface PassportData {
+export interface IPassportData {
   surname: string;
   givenName: string;
   gender: string;
@@ -10,7 +10,7 @@ export interface PassportData {
   placeOfBirth: string;
 }
 
-export interface DriverLicenseData {
+export interface IDriverLicenseData {
   surname: string;
   givenName: string;
   dateOfBirth: string;

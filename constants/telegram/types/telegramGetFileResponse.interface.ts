@@ -1,4 +1,4 @@
-export interface TelegramGetFileResponse {
+export interface ITelegramGetFileResponse {
   ok: boolean;
   result: {
     file_id: string;

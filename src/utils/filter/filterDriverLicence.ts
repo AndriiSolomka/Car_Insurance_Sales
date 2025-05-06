@@ -1,6 +1,8 @@
-import { DriverLicenseData } from 'constants/telegram/types/filterDocument';
+import { IDriverLicenseData } from 'constants/telegram/types/filterDocument.interface';
 
-export const filterDriverLicenseData = (rawData: string): DriverLicenseData => {
+export const filterDriverLicenseData = (
+  rawData: string,
+): IDriverLicenseData => {
   const extract = (label: string): string => {
     const regex = new RegExp(`:${label}: (.+)`);
     const match = rawData.match(regex);
@@ -19,7 +21,7 @@ export const filterDriverLicenseData = (rawData: string): DriverLicenseData => {
   };
 };
 
-export const checkDriverLicenseData = (data: DriverLicenseData): boolean => {
+export const checkDriverLicenseData = (data: IDriverLicenseData): boolean => {
   for (const item in data) {
     if (data[item] === 'N/A') return false;
   }
