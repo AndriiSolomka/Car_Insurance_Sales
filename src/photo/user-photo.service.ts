@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { REQUIRED_PHOTO_COUNT } from 'constants/telegram/enums/photo';
+import { REQUIRED_PHOTO_COUNT } from 'src/constants/telegram/enums/photo';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()

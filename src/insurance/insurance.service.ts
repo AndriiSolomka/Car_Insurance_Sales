@@ -1,7 +1,7 @@
 // services/insurance.service.ts
 import { Injectable } from '@nestjs/common';
 import { OpenAiService } from 'src/openai/openai.service';
-import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
+import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 import { generatePolicyPrompt } from 'src/utils/promt/insurance';
 
 @Injectable()

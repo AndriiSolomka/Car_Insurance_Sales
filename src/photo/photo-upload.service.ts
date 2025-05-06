@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { PhotoExtractionService } from './photo-extraction.service';
 
 import { UsersService } from 'src/users/users.service';
-import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
+import { StateStatuses } from 'src/constants/telegram/enums/state-status.enum';
 import { Context } from 'telegraf';
 import { UserPhotoService } from './user-photo.service';
 import { DocumentValidationService } from 'src/documents/document-validation.service';
 import { ConfirmationService } from 'src/insurance/confirmation.service';
 import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'constants/openai/promts';
+import { OpenAiPrompts } from 'src/constants/openai/promts';
 
 @Injectable()
 export class PhotoUploadHandler {

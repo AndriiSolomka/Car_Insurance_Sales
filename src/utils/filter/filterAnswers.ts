@@ -1,4 +1,4 @@
-import { UserAnswers } from 'constants/telegram/enums/user-answers.enum';
+import { UserAnswers } from 'src/constants/telegram/enums/user-answers.enum';
 import { Context } from 'telegraf';
 
 export const isPositiveAnswer = (ctx: Context): boolean => {

@@ -1,4 +1,4 @@
-import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
+import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 
 export const filterPassportData = (rawData: string): IPassportData => {
   const extract = (label: string): string => {

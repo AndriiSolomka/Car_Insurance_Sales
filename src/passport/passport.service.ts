@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
+import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 import { MindeeService } from 'src/mindee/mindee.service';
 import {
   checkPassportData,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ITelegramGetFileResponse } from 'constants/telegram/types/telegramGetFileResponse.interface';
+import { ITelegramGetFileResponse } from 'src/constants/telegram/types/telegramGetFileResponse.interface';
 import { FetchService } from 'src/fetch/fetch.service';
 
 @Injectable()

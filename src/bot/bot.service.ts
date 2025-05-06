@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
+import { StateStatuses } from 'src/constants/telegram/enums/state-status.enum';
 import { PhotoUploadHandler } from 'src/photo/photo-upload.service';
 import { UsersService } from 'src/users/users.service';
 import { isPositiveAnswer } from 'src/utils/filter/filterAnswers';
 import { Context } from 'telegraf';
 import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'constants/openai/promts';
+import { OpenAiPrompts } from 'src/constants/openai/promts';
 
 @Injectable()
 export class BotService {

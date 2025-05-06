@@ -1,4 +1,4 @@
-import { IDriverLicenseData } from 'constants/telegram/types/filterDocument.interface';
+import { IDriverLicenseData } from 'src/constants/telegram/types/filterDocument.interface';
 
 export const filterDriverLicenseData = (
   rawData: string,

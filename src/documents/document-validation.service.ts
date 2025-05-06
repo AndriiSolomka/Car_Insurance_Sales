@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DocumentsService } from './document.service';
 import { UsersService } from 'src/users/users.service';
 import { Context } from 'telegraf';
-import { OpenAiPrompts } from 'constants/openai/promts';
+import { OpenAiPrompts } from 'src/constants/openai/promts';
 import { OpenAiService } from 'src/openai/openai.service';
 
 @Injectable()

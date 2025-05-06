@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InsuranceService } from './insurance.service';
-import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
+import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 import { Context } from 'telegraf';
 import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'constants/openai/promts';
+import { OpenAiPrompts } from 'src/constants/openai/promts';
 
 @Injectable()
 export class ConfirmationService {
