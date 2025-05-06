@@ -14,7 +14,7 @@ export class BotService {
   ) {}
 
   async start(ctx: Context) {
-    const userId = this.getUserId(ctx);
+    const userId = this.userService.getUserId(ctx);
     this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
     return ctx.reply(BotMessages.WELCOME);
   }
@@ -24,15 +24,11 @@ export class BotService {
   }
 
   async confirmPrice(ctx: Context) {
-    const userId = this.getUserId(ctx);
+    const userId = this.userService.getUserId(ctx);
     if (isPositiveAnswer(ctx)) {
       this.userService.setState(userId, StateStatuses.COMPLETED);
       return ctx.reply(BotMessages.CONFIRMED);
     }
     return ctx.reply(BotMessages.ONLY_ONE_PRICE);
-  }
-
-  private getUserId(ctx: Context): string {
-    return ctx.chat?.id?.toString() ?? 'unknown_user';
   }
 }

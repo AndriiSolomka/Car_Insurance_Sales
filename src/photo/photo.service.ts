@@ -44,7 +44,7 @@ export class PhotoService {
   }
 
   async processPhotoUpload(ctx: Context) {
-    const userId = this.getUserId(ctx);
+    const userId = this.userService.getUserId(ctx);
 
     const photoBuffers = await this.extractPhotos(ctx);
     this.userService.addPhotos(userId, photoBuffers);
@@ -52,10 +52,11 @@ export class PhotoService {
     const userPhotos = this.userService.getPhotos(userId);
     const isPhotoCountSufficient = this.checkPhotoCount(userPhotos);
 
-    if (!isPhotoCountSufficient)
+    if (!isPhotoCountSufficient) {
       return ctx.reply(
         `${photoProgressMessage(userPhotos.length, REQUIRED_PHOTO_COUNT.COUNT)}\n`,
       );
+    }
 
     return this.validateAndRespond(ctx, userId, userPhotos);
   }
@@ -65,32 +66,41 @@ export class PhotoService {
     userId: string,
     photos: Buffer[],
   ) {
+    const passportData = await this.validatePhotos(ctx, userId, photos);
+    if (!passportData) return;
+
+    this.finalizeUserState(userId);
+    await this.sendConfirmation(ctx, passportData);
+  }
+
+  private async validatePhotos(
+    ctx: Context,
+    userId: string,
+    photos: Buffer[],
+  ): Promise<IPassportData | null> {
     const validation = await this.documentValidator.validate(photos);
 
-    if (!validation || !validation.passportData) {
+    if (!validation?.passportData) {
       this.userService.clearPhotos(userId);
-      return ctx.reply('Неверные паспортные данные.');
+      await ctx.reply(BotMessages.INVALID_PASSPORT_DATA);
+      return null;
     }
 
-    this.userService.setState(userId, StateStatuses.DOCUMENTS_RECEIVED);
-
-    await ctx.reply(
-      `Документы получены\n${JSON.stringify(validation.passportData, null, 2)}`,
-    );
-
-    // const policyText = await this.insuranceService.generatePolicy(
-    //   validation.passportData,
-    // );
-
-    const policyText = this.insuranceService.generatePolicy(
-      validation.passportData,
-    );
-
-    await ctx.reply('✅ Ваш страховой полис:');
-    await ctx.reply(policyText);
+    return validation.passportData;
   }
-  private getUserId(ctx: Context): string {
-    return ctx.chat?.id?.toString() ?? 'unknown_user';
+
+  private finalizeUserState(userId: string) {
+    this.userService.setState(userId, StateStatuses.DOCUMENTS_RECEIVED);
+  }
+
+  private async sendConfirmation(ctx: Context, passportData: IPassportData) {
+    await ctx.reply(
+      `${BotMessages.DOCUMENTS_RECEIVED}\n
+      ${JSON.stringify(passportData, null, 2)}`,
+    );
+
+    const policyText = this.insuranceService.generatePolicy(passportData);
+    await ctx.reply(policyText);
   }
 
   private checkPhotoCount(userPhotos: Buffer[]): boolean {

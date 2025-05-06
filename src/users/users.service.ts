@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Context } from 'telegraf';
 
 @Injectable()
 export class UsersService {
@@ -24,5 +25,9 @@ export class UsersService {
 
   clearPhotos(userId: string) {
     this.photos.delete(userId);
+  }
+
+  getUserId(ctx: Context): string {
+    return ctx.chat?.id?.toString() ?? 'unknown_user';
   }
 }

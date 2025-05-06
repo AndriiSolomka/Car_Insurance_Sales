@@ -14,7 +14,7 @@ export class OpenAiService {
 
   async ask(prompt: string): Promise<string> {
     const response = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: this.config.get<string>('OPENAI_MODEL') || 'default-model',
       messages: [{ role: 'user', content: prompt }],
     });
 
