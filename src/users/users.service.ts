@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 import { Context } from 'telegraf';
 
 @Injectable()
 export class UsersService {
   private state = new Map<string, string>();
   private photos = new Map<string, Buffer[]>();
+  private passportData = new Map<string, any>();
 
   getState(userId: string): string | undefined {
     return this.state.get(userId);
@@ -29,5 +31,14 @@ export class UsersService {
 
   getUserId(ctx: Context): string {
     return ctx.chat?.id?.toString() ?? 'unknown_user';
+  }
+
+  getPassportData(userId: string): IPassportData {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.passportData.get(userId);
+  }
+
+  setPassportData(userId: string, data: any) {
+    this.passportData.set(userId, data);
   }
 }

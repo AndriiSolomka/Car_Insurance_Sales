@@ -6,6 +6,7 @@ import { BotUpdate } from './bot.update';
 import { UsersModule } from 'src/users/users.module';
 import { PhotoModule } from 'src/photo/photo.module';
 import { OpenaiPromptsModule } from 'src/openai-prompts/openai-prompts.module';
+import { InsuranceModule } from 'src/insurance/insurance.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OpenaiPromptsModule } from 'src/openai-prompts/openai-prompts.module';
     UsersModule,
     PhotoModule,
     OpenaiPromptsModule,
+    InsuranceModule,
   ],
 
   providers: [BotService, BotUpdate],

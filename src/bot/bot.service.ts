@@ -6,6 +6,7 @@ import { isPositiveAnswer } from 'src/utils/filter/filterAnswers';
 import { Context } from 'telegraf';
 import { OpenaiPromptsService } from 'src/openai-prompts/openai-prompts.service';
 import { OpenAiPromptsStatus } from 'src/constants/openai/prompts';
+import { ConfirmationService } from 'src/insurance/confirmation.service';
 
 @Injectable()
 export class BotService {
@@ -13,16 +14,13 @@ export class BotService {
     private readonly userService: UsersService,
     private readonly photoUploadHandler: PhotoUploadHandler,
     private readonly aiService: OpenaiPromptsService,
+    private readonly confirmationService: ConfirmationService,
   ) {}
 
   async start(ctx: Context) {
     const userId = this.userService.getUserId(ctx);
     this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
-    const aiResponse = await this.aiService.askPrompt(
-      OpenAiPromptsStatus.START,
-    );
-
-    return ctx.reply(aiResponse);
+    return ctx.reply(await this.aiService.askPrompt(OpenAiPromptsStatus.START));
   }
 
   async uploadPhoto(ctx: Context) {
@@ -34,15 +32,10 @@ export class BotService {
 
     if (isPositiveAnswer(ctx)) {
       this.userService.setState(userId, StateStatuses.COMPLETED);
-      const aiResponse = await this.aiService.askPrompt(
-        OpenAiPromptsStatus.CONFIRM_PRICE_YES,
-      );
-      return ctx.reply(aiResponse);
+      const passportData = this.userService.getPassportData(userId);
+      return await this.confirmationService.sendConfirmation(ctx, passportData);
     }
 
-    const aiResponse = await this.aiService.askPrompt(
-      OpenAiPromptsStatus.CONFIRM_PRICE_NO,
-    );
-    return ctx.reply(aiResponse);
+    return await this.aiService.askPrompt(OpenAiPromptsStatus.CONFIRM_PRICE_NO);
   }
 }
