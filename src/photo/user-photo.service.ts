@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { REQUIRED_PHOTO_COUNT } from 'constants/telegram/enums/photo';
-import { photoProgressMessage } from 'constants/telegram/enums/bot-messages.enum';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class UserPhotoService {
     return userPhotos.length === this.REQUIRED_PHOTO_COUNT;
   }
 
-  getPhotoProgressMessage(currentCount: number): string {
-    return photoProgressMessage(currentCount, this.REQUIRED_PHOTO_COUNT);
+  clearPhotos(userId: string): void {
+    this.userService.clearPhotos(userId);
   }
 }

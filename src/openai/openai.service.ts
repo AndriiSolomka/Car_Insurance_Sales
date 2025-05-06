@@ -14,7 +14,7 @@ export class OpenAiService {
 
   async ask(prompt: string): Promise<string> {
     const response = await this.openai.chat.completions.create({
-      model: this.config.get<string>('OPENAI_MODEL') || 'default-model',
+      model: this.config.get<string>('OPENAI_API_VERSION') || 'default-model',
       messages: [{ role: 'user', content: prompt }],
     });
 

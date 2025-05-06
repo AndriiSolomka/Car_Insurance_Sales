@@ -15,6 +15,7 @@ import { UserPhotoService } from './user-photo.service';
     DocumentsModule,
     OpenAiModule,
     InsuranceModule,
+    OpenAiModule,
   ],
   providers: [PhotoExtractionService, PhotoUploadHandler, UserPhotoService],
   exports: [PhotoUploadHandler],
