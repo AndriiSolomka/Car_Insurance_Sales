@@ -5,7 +5,7 @@ import { BotService } from './bot.service';
 import { BotUpdate } from './bot.update';
 import { UsersModule } from 'src/users/users.module';
 import { PhotoModule } from 'src/photo/photo.module';
-import { OpenAiModule } from 'src/openai/openai.module';
+import { OpenaiPromptsModule } from 'src/openai-prompts/openai-prompts.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { OpenAiModule } from 'src/openai/openai.module';
     }),
     UsersModule,
     PhotoModule,
-    OpenAiModule,
+    OpenaiPromptsModule,
   ],
 
   providers: [BotService, BotUpdate],

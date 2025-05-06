@@ -12,7 +12,7 @@ import { OpenAiModule } from './openai/openai.module';
 import { InsuranceModule } from './insurance/insurance.module';
 import { PassportModule } from './passport/passport.module';
 import { DriverLicenseModule } from './driver-license/driver-license.module';
-import { OpenaiPromtsModule } from './openai-promts/openai-promts.module';
+import { OpenaiPromptsModule } from './openai-prompts/openai-prompts.module';
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ import { OpenaiPromtsModule } from './openai-promts/openai-promts.module';
     InsuranceModule,
     PassportModule,
     DriverLicenseModule,
-    OpenaiPromtsModule,
+    OpenaiPromptsModule,
   ],
   controllers: [],
   providers: [],

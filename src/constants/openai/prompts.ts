@@ -12,3 +12,12 @@ export enum OpenAiPrompts {
   INVALID_PASSPORT_DATA = 'Фото паспорта пользователя не прошли валидацию. Пожалуйста, сообщите об этом.',
   CONFIRMATION = 'Пользователь завершил процесс загрузки документов. Сгенерируйте сообщение с подтверждением и информацией о страховом полисе.',
 }
+
+export enum OpenAiPromptsStatus {
+  START = 'START',
+  CONFIRM_PRICE_YES = 'CONFIRM_PRICE_YES',
+  CONFIRM_PRICE_NO = 'CONFIRM_PRICE_NO',
+  INVALID_PASSPORT_DATA = 'INVALID_PASSPORT_DATA',
+  CONFIRMATION = 'CONFIRMATION',
+  ERROR = 'Что-то пошло не так, попробуйте еще раз',
+}

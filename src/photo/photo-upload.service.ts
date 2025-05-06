@@ -8,7 +8,7 @@ import { UserPhotoService } from './user-photo.service';
 import { DocumentValidationService } from 'src/documents/document-validation.service';
 import { ConfirmationService } from 'src/insurance/confirmation.service';
 import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'src/constants/openai/promts';
+import { OpenAiPrompts } from 'src/constants/openai/prompts';
 
 @Injectable()
 export class PhotoUploadHandler {

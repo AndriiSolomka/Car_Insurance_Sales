@@ -4,23 +4,23 @@ import { PhotoUploadHandler } from 'src/photo/photo-upload.service';
 import { UsersService } from 'src/users/users.service';
 import { isPositiveAnswer } from 'src/utils/filter/filterAnswers';
 import { Context } from 'telegraf';
-import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'src/constants/openai/promts';
+import { OpenaiPromptsService } from 'src/openai-prompts/openai-prompts.service';
+import { OpenAiPromptsStatus } from 'src/constants/openai/prompts';
 
 @Injectable()
 export class BotService {
   constructor(
     private readonly userService: UsersService,
     private readonly photoUploadHandler: PhotoUploadHandler,
-    private readonly openAiService: OpenAiService,
+    private readonly aiService: OpenaiPromptsService,
   ) {}
 
   async start(ctx: Context) {
     const userId = this.userService.getUserId(ctx);
     this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
-
-    const prompt = OpenAiPrompts.START;
-    const aiResponse = await this.processWithAI(prompt);
+    const aiResponse = await this.aiService.askPrompt(
+      OpenAiPromptsStatus.START,
+    );
 
     return ctx.reply(aiResponse);
   }
@@ -34,24 +34,15 @@ export class BotService {
 
     if (isPositiveAnswer(ctx)) {
       this.userService.setState(userId, StateStatuses.COMPLETED);
-      const prompt = OpenAiPrompts.CONFIRM_PRICE_YES;
-      const aiResponse = await this.processWithAI(prompt);
+      const aiResponse = await this.aiService.askPrompt(
+        OpenAiPromptsStatus.CONFIRM_PRICE_YES,
+      );
       return ctx.reply(aiResponse);
     }
 
-    const prompt = OpenAiPrompts.CONFIRM_PRICE_NO;
-    const aiResponse = await this.processWithAI(prompt);
-
+    const aiResponse = await this.aiService.askPrompt(
+      OpenAiPromptsStatus.CONFIRM_PRICE_NO,
+    );
     return ctx.reply(aiResponse);
-  }
-
-  async processWithAI(prompt: string): Promise<string> {
-    try {
-      const aiResponse = await this.openAiService.ask(prompt);
-      return aiResponse || OpenAiPrompts.ERROR;
-    } catch (error) {
-      console.error('OpenAI Error:', error);
-      return OpenAiPrompts.ERROR;
-    }
   }
 }

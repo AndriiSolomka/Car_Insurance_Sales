@@ -2,21 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { InsuranceService } from './insurance.service';
 import { IPassportData } from 'src/constants/telegram/types/filterDocument.interface';
 import { Context } from 'telegraf';
-import { OpenAiService } from 'src/openai/openai.service';
-import { OpenAiPrompts } from 'src/constants/openai/promts';
+import { OpenaiPromptsService } from 'src/openai-prompts/openai-prompts.service';
+import { OpenAiPromptsStatus } from 'src/constants/openai/prompts';
 
 @Injectable()
 export class ConfirmationService {
   constructor(
     private readonly insuranceService: InsuranceService,
-    private readonly openAiService: OpenAiService,
+    private readonly aiService: OpenaiPromptsService,
   ) {}
 
   async sendConfirmation(ctx: Context, passportData: IPassportData) {
-    const prompt = OpenAiPrompts.CONFIRMATION;
-    const aiResponse = await this.openAiService.ask(prompt);
+    const aiResponse = await this.aiService.askPrompt(
+      OpenAiPromptsStatus.CONFIRMATION,
+    );
     await ctx.reply(aiResponse);
-    const policyText = this.insuranceService.generatePolicy(passportData);
+
+    const policyText = await this.insuranceService.generatePolicy(passportData);
     await ctx.reply(policyText);
   }
 }

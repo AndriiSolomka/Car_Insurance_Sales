@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { DocumentsService } from './document.service';
 import { UsersService } from 'src/users/users.service';
 import { Context } from 'telegraf';
-import { OpenAiPrompts } from 'src/constants/openai/promts';
-import { OpenAiService } from 'src/openai/openai.service';
+import { OpenAiPromptsStatus } from 'src/constants/openai/prompts';
+import { OpenaiPromptsService } from 'src/openai-prompts/openai-prompts.service';
 
 @Injectable()
 export class DocumentValidationService {
   constructor(
     private readonly documentService: DocumentsService,
     private readonly userService: UsersService,
-    private readonly openAiService: OpenAiService,
+    private readonly aiService: OpenaiPromptsService,
   ) {}
 
   async validatePhotos(ctx: Context, userId: string, photos: Buffer[]) {
@@ -18,10 +18,9 @@ export class DocumentValidationService {
 
     if (!validation) {
       this.userService.clearPhotos(userId);
-
-      const prompt = OpenAiPrompts.INVALID_PASSPORT_DATA;
-      const aiResponse = await this.openAiService.ask(prompt);
-
+      const aiResponse = await this.aiService.askPrompt(
+        OpenAiPromptsStatus.INVALID_PASSPORT_DATA,
+      );
       await ctx.reply(aiResponse);
       return null;
     }

@@ -8,14 +8,8 @@ import { generatePolicyPrompt } from 'src/utils/promt/insurance';
 export class InsuranceService {
   constructor(private readonly openAiService: OpenAiService) {}
 
-  // async generatePolicy(passportData: IPassportData): Promise<string> {
-  //   const prompt = generatePolicyPrompt(passportData);
-  //   return await this.openAiService.ask(prompt);
-  // }
-
-  generatePolicy(passportData: IPassportData): string {
-    console.log('Generating policy with data:', passportData);
-
-    return 'OK';
+  async generatePolicy(passportData: IPassportData): Promise<string> {
+    const prompt = generatePolicyPrompt(passportData);
+    return await this.openAiService.ask(prompt);
   }
 }
