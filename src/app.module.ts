@@ -10,6 +10,8 @@ import { PhotoModule } from './photo/photo.module';
 import { DocumentsModule } from './documents/documents.module';
 import { OpenAiModule } from './openai/openai.module';
 import { InsuranceModule } from './insurance/insurance.module';
+import { PassportModule } from './passport/passport.module';
+import { DriverLicenseModule } from './driver-license/driver-license.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { InsuranceModule } from './insurance/insurance.module';
     DocumentsModule,
     OpenAiModule,
     InsuranceModule,
+    PassportModule,
+    DriverLicenseModule,
   ],
   controllers: [],
   providers: [],

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PassportService } from './passport.service';
-import { DriverLicenseService } from './driver-license.service';
+import { DriverLicenseService } from 'src/driver-license/driver-license.service';
+import { PassportService } from 'src/passport/passport.service';
 
 @Injectable()
-export class DocumentValidatorService {
+export class DocumentsService {
   constructor(
     private readonly passportService: PassportService,
     private readonly driverLicenseService: DriverLicenseService,
@@ -12,17 +12,17 @@ export class DocumentValidatorService {
   async validate(photos: Buffer[]) {
     const [licensePhoto, passportPhoto] = photos;
 
-    const { valid: licenseValid, data: licenseData } =
+    const passport2 =
       await this.passportService.validatePassport(passportPhoto);
 
-    const { valid: passportValid, data: passportData } =
+    const passport1 =
       await this.passportService.validatePassport(passportPhoto);
 
-    if (!licenseValid || !passportValid) return null;
+    if (!passport1 || !passport2) return null;
 
     return {
-      licenseData,
-      passportData,
+      passport2,
+      passport1,
     };
   }
 }

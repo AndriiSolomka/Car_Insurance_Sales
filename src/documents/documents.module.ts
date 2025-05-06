@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PassportService } from './passport.service';
-import { MindeeModule } from 'src/mindee/mindee.module';
-import { DriverLicenseService } from './driver-license.service';
-import { DocumentValidatorService } from './validator.service';
+import { DocumentsService } from './document.service';
+import { PassportModule } from 'src/passport/passport.module';
+import { DriverLicenseModule } from 'src/driver-license/driver-license.module';
 
 @Module({
-  imports: [MindeeModule],
-  providers: [PassportService, DriverLicenseService, DocumentValidatorService],
-  exports: [PassportService, DriverLicenseService, DocumentValidatorService],
+  imports: [PassportModule, DriverLicenseModule],
+  providers: [DocumentsService],
+  exports: [DocumentsService],
 })
 export class DocumentsModule {}

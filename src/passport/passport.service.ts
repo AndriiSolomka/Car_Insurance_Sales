@@ -10,11 +10,9 @@ import {
 export class PassportService {
   constructor(private readonly mindee: MindeeService) {}
 
-  async validatePassport(
-    buffer: ArrayBuffer,
-  ): Promise<{ valid: boolean; data: IPassportData }> {
+  async validatePassport(buffer: ArrayBuffer): Promise<null | IPassportData> {
     const response = await this.mindee.getPassportInfo(buffer);
     const filtered = filterPassportData(response);
-    return { valid: checkPassportData(filtered), data: filtered };
+    return checkPassportData(filtered) ? filtered : null;
   }
 }

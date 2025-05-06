@@ -6,7 +6,7 @@ import {
 import { REQUIRED_PHOTO_COUNT } from 'constants/telegram/enums/photo';
 import { StateStatuses } from 'constants/telegram/enums/state-status.enum';
 import { IPassportData } from 'constants/telegram/types/filterDocument.interface';
-import { DocumentValidatorService } from 'src/documents/validator.service';
+import { DocumentsService } from 'src/documents/document.service';
 import { InsuranceService } from 'src/insurance/insurance.service';
 import { OpenAiService } from 'src/openai/openai.service';
 import { TelegramService } from 'src/telegram/telegram.service';
@@ -19,7 +19,7 @@ export class PhotoService {
   constructor(
     private readonly telegram: TelegramService,
     private readonly userService: UsersService,
-    private readonly documentValidator: DocumentValidatorService,
+    private readonly documentService: DocumentsService,
     private readonly openAiService: OpenAiService,
     private readonly insuranceService: InsuranceService,
   ) {}
@@ -70,23 +70,20 @@ export class PhotoService {
     if (!passportData) return;
 
     this.finalizeUserState(userId);
-    await this.sendConfirmation(ctx, passportData);
+    const selectedPassportData = passportData.passport1; // Adjust this to select the correct passport
+    await this.sendConfirmation(ctx, selectedPassportData);
   }
 
-  private async validatePhotos(
-    ctx: Context,
-    userId: string,
-    photos: Buffer[],
-  ): Promise<IPassportData | null> {
-    const validation = await this.documentValidator.validate(photos);
+  private async validatePhotos(ctx: Context, userId: string, photos: Buffer[]) {
+    const validation = await this.documentService.validate(photos);
 
-    if (!validation?.passportData) {
+    if (!validation) {
       this.userService.clearPhotos(userId);
       await ctx.reply(BotMessages.INVALID_PASSPORT_DATA);
       return null;
     }
 
-    return validation.passportData;
+    return validation;
   }
 
   private finalizeUserState(userId: string) {
