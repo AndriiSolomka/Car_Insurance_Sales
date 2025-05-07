@@ -1,0 +1,16 @@
+volumes:
+  postgres-db:
+
+services:
+  node-server:
+    container_name: node-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/home/node/app/src
+    command: 'npm run start:dev'
