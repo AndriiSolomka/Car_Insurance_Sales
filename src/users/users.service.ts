@@ -41,4 +41,10 @@ export class UsersService {
   setPassportData(userId: string, data: any) {
     this.passportData.set(userId, data);
   }
+
+  clearUserData(userId: string) {
+    this.state.delete(userId);
+    this.photos.delete(userId);
+    this.passportData.delete(userId);
+  }
 }

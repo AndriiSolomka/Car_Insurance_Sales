@@ -4,9 +4,10 @@ import { TelegramModule } from 'src/telegram/telegram.module';
 import { UsersModule } from 'src/users/users.module';
 import { DocumentsModule } from 'src/documents/documents.module';
 import { InsuranceModule } from 'src/insurance/insurance.module';
-import { PhotoUploadHandler } from './photo-upload.service';
+import { PhotoUploadHandler } from './photo-upload-handler.service';
 import { UserPhotoService } from './user-photo.service';
 import { OpenaiPromptsModule } from 'src/openai-prompts/openai-prompts.module';
+import { PhotoCountValidatorService } from './photo-count-validation.service';
 
 @Module({
   imports: [
@@ -16,7 +17,12 @@ import { OpenaiPromptsModule } from 'src/openai-prompts/openai-prompts.module';
     InsuranceModule,
     OpenaiPromptsModule,
   ],
-  providers: [PhotoExtractionService, PhotoUploadHandler, UserPhotoService],
+  providers: [
+    PhotoExtractionService,
+    PhotoUploadHandler,
+    UserPhotoService,
+    PhotoCountValidatorService,
+  ],
   exports: [PhotoUploadHandler],
 })
 export class PhotoModule {}

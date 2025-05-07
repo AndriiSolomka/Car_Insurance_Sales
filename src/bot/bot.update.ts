@@ -18,6 +18,6 @@ export class BotUpdate {
 
   @On('text')
   async onText(@Ctx() ctx: Context) {
-    await this.botService.confirmPrice(ctx);
+    await this.botService.confirmData(ctx);
   }
 }
