@@ -16,6 +16,7 @@ export class DocumentsService {
   ) {}
 
   async validate(photos: Buffer[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [licensePhoto, passportPhoto] = photos;
 
     const license = await this.passportService.validatePassport(passportPhoto);
@@ -44,7 +45,9 @@ export class DocumentsService {
       );
 
       const extractedDataMsg = DOCUMENTS_MESSAGES.EXTRACTED_DATA(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         passportData.passport,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         passportData.license,
       );
 

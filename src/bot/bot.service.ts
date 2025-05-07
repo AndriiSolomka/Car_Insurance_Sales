@@ -7,7 +7,6 @@ import { Context } from 'telegraf';
 import { OpenaiPromptsService } from 'src/openai-prompts/openai-prompts.service';
 import { OpenAiPromptsStatus } from 'src/constants/openai/prompts';
 import { InsuranceService } from 'src/insurance/insurance.service';
-import { BOT_MESSAGES } from 'src/constants/telegram/enums/bot-answers.enum';
 
 @Injectable()
 export class BotService {
@@ -20,12 +19,23 @@ export class BotService {
 
   async start(ctx: Context) {
     const userId = this.userService.getUserId(ctx);
+    this.userService.clearUserData(userId);
     this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
     return ctx.reply(await this.aiService.askPrompt(OpenAiPromptsStatus.START));
   }
 
   async uploadPhoto(ctx: Context) {
-    return this.photoUploadHandler.processPhotoUpload(ctx);
+    try {
+      return this.photoUploadHandler.processPhotoUpload(ctx);
+    } catch {
+      const userId = this.userService.getUserId(ctx);
+      this.userService.clearUserData(userId);
+      return ctx.reply(
+        await this.aiService.askPrompt(
+          OpenAiPromptsStatus.RETRY_DOCUMENT_UPLOAD,
+        ),
+      );
+    }
   }
 
   async confirmData(ctx: Context) {
@@ -40,7 +50,12 @@ export class BotService {
       case StateStatuses.WAITING_FOR_DOCUMENTS:
         return this.handleDocumentsUploaded(ctx, userId);
       default:
-        return ctx.reply(BOT_MESSAGES.REUPLOAD_DOCUMENTS);
+        this.userService.clearUserData(userId);
+        return ctx.reply(
+          await this.aiService.askPrompt(
+            OpenAiPromptsStatus.RETRY_DOCUMENT_UPLOAD,
+          ),
+        );
     }
   }
 
@@ -50,10 +65,14 @@ export class BotService {
         userId,
         StateStatuses.WAITING_FOR_PRICE_CONFIRMATION,
       );
-      return ctx.reply(BOT_MESSAGES.PRICE_CONFIRMATION);
+      return ctx.reply(
+        await this.aiService.askPrompt(OpenAiPromptsStatus.SEND_PRICE),
+      );
     } else {
       this.userService.setState(userId, StateStatuses.WAITING_FOR_DOCUMENTS);
-      return ctx.reply(BOT_MESSAGES.REUPLOAD_DOCUMENTS);
+      return ctx.reply(
+        await this.aiService.askPrompt(OpenAiPromptsStatus.DATA_REJECTED),
+      );
     }
   }
 
@@ -75,6 +94,10 @@ export class BotService {
       userId,
       StateStatuses.WAITING_FOR_DATA_CONFIRMATION,
     );
-    return ctx.reply(BOT_MESSAGES.REUPLOAD_DOCUMENTS);
+    return ctx.reply(
+      await this.aiService.askPrompt(
+        OpenAiPromptsStatus.CONFIRM_EXTRACTED_DATA,
+      ),
+    );
   }
 }
