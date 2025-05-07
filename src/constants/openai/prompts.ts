@@ -12,7 +12,7 @@ export enum OpenAiPrompts {
   CONFIRMATION = 'Користувач завершив процес завантаження документів. Згенеруйте повідомлення з підтвердженням і деталями страхового поліса.',
   DATA_CONFIRMATION = 'Користувач підтвердив, що дані, зчитані з документів, є правильними. Подякуй за підтвердження та повідом, що зараз буде запропонована ціна.',
   DATA_REJECTED = 'Користувач відхилив дані з документів. Попроси зробити нове фото та надіслати його повторно для зчитування інформації.',
-  RETRY_DOCUMENT_UPLOAD = 'Під час обробки документа сталася помилка. Будь ласка, зробіть нове фото і завантажте його ще раз.',
+  RETRY_DOCUMENT_UPLOAD = 'Дай текст, що Під час обробки документа сталася помилка. Будь ласка, зробіть нове фото і завантажте його ще раз. Нажміть /start, щоб почати знову.',
   CONFIRM_EXTRACTED_DATA = 'Ось дані, зчитані з ваших документів: [вставити дані]. Якщо все правильно, підтвердіть. Якщо ні — відхиліть.',
 }
 
@@ -22,7 +22,7 @@ export enum OpenAiPromptsStatus {
   CONFIRM_PRICE_NO = 'CONFIRM_PRICE_NO',
   INVALID_PASSPORT_DATA = 'INVALID_PASSPORT_DATA',
   CONFIRMATION = 'CONFIRMATION',
-  ERROR = 'Что-то пошло не так, попробуйте еще раз',
+  ERROR = 'ERROR',
   DOCUMENT_UPLOAD_SUCCESS = 'DOCUMENT_UPLOAD_SUCCESS',
   DOCUMENT_UPLOAD_INSUFFICIENT = 'DOCUMENT_UPLOAD_INSUFFICIENT',
   DOCUMENT_UPLOAD_TOO_MANY = 'DOCUMENT_UPLOAD_TOO_MANY',
